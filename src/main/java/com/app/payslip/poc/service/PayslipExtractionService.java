@@ -22,7 +22,7 @@ public class PayslipExtractionService {
     private final ChatClient chat;
     private final PromptConfigProperties promptConfig;
 
-    public ExtractedPayslipDataDTO scrapePaySlip(MultipartFile file) throws IOException {
+    public ExtractedPayslipDataDTO scrapePayslip(MultipartFile file) throws IOException {
         BufferedImage image = processFile(file);
 
         byte[] imageBytes = convertImageToBytes(image);

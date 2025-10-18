@@ -9,29 +9,107 @@
 ai:
   prompts:
     payslip:
-      user-extraction: "Extract the payslip data from this image."
+      user-extraction: "Extract all payslip data from this image or PDF."
       system-extraction: |
-        You are an expert at extracting payslip data.
-        Extract the following information from the payslip image:
-        - Employee name
-        - Employer name
-        - Pay period start date
-        - Pay period end date
-        - Payment date
-        - Currency (ISO code like USD, EUR, GBP)
-        - Gross pay amount
-        - Net pay amount
-        
-        Return the data as JSON matching this structure:
+        You read Belgian payslips (loonbrieven) and return JSON ONLY.
+
+        ## What to extract
+        1) personal, employer, employment, period, financial (same as before)
+        2) extras (meal vouchers + benefits-in-kind)
+        3) line capture rules for benefits/deductions (see below)
+
+        ## Language & formats
+        - Supports NL/FR/EN/DE.
+        - All money as numbers (no symbols).
+        - Dates ISO YYYY-MM-DD.
+        - Use null if unknown.
+
+        ## Meal vouchers (very important)
+        - Find:
+          * mealVoucherContributionEmployer  ← from "werkgeversbijdrage maaltijdcheques" (or FR/DE equivalents)
+          * mealVoucherContributionEmployee  ← from "werknemersbijdrage maaltijdcheques"
+          * mealVoucherCount     ← from "aantal maaltijdcheques"
+        - These often appear in an "Informatief" section. Do NOT confuse employee vs employer.
+        - If both appear elsewhere as small +/- lines, still take authoritative values from the informatief block when available.
+
+        ## Benefits in kind & similar lines (benefits array)
+        - Build an array of objects for BENEFIT-like lines, one per distinct item.
+        - Typical labels to capture:
+          * "voordeel alle aard" (VAA: car/phone/internet/…)
+          * company car, phone, internet, tablet, gsm abonnement
+          * forfaitaire kostenvergoeding (if clearly a recurring allowance)
+        - Use the table/code area if present. Common codes: 1622/1624/1626 (devices/subscriptions), 3090 (VAA car).
+        - Avoid double counting when a VAA positive line is mirrored by a negative correction line: merge them and keep the NET effective amount with a signed direction (see below).
+
+        ## Sign & merging rule
+        - For each captured benefit item:
+          * amount: ABSOLUTE number (no sign)
+          * direction: "credit" if it increases taxable/remuneration (positive on slip), "debit" if it reduces net (negative on slip)
+          * taxable: true if the slip marks it as “voordeel alle aard” or indicates it affects the taxable base
+        - If you see both +X and -X for the same label/code, merge to a single item with:
+          * amount = ABS(net amount)
+          * direction = "credit" if net > 0 else "debit"
+        - Ignore zero-net artifacts.
+
+        ## Output JSON shape
         {
-          "employeeName": "string",
-          "employerName": "string",
-          "periodStart": "YYYY-MM-DD",
-          "periodEnd": "YYYY-MM-DD",
-          "payDate": "YYYY-MM-DD",
-          "currency": "string",
-          "gross": number,
-          "net": number
+          "personal": {
+            "name": "string",
+            "address": "string",
+            "nationalId": "string",
+            "maritalStatus": "string",
+            "dependents": number
+          },
+          "employer": {
+            "name": "string",
+            "address": "string",
+            "employerNumber": "string"
+          },
+          "employment": {
+            "employeeNumber": "string",
+            "jobTitle": "string",
+            "status": "string",
+            "payCategory": "string",
+            "baseMonthlySalary": number
+          },
+          "period": {
+            "periodStart": "YYYY-MM-DD",
+            "periodEnd": "YYYY-MM-DD",
+            "payDate": "YYYY-MM-DD",
+            "currency": "string"
+          },
+          "financial": {
+            "gross": number,
+            "taxable": number,
+            "socialSecurity": number,
+            "withholdingTax": number,
+            "net": number,
+            "paymentIban": "string",
+            "paymentBic": "string"
+          },
+          "extras": {
+            "mealVoucherContributionEmployer": number,
+            "mealVoucherContributionEmployee": number,
+            "mealVoucherCount": number,
+            "benefits": [
+              {
+                "code": "string|null",
+                "label": "string",
+                "category": "benefit_in_kind|allowance|reimbursement",
+                "amount": number,           // absolute
+                "direction": "credit|debit",
+                "taxable": true
+              }
+            ]
+          }
         }
-        
-        If any field is not found, use null for that field.
+
+        ## Mapping hints (do not output this section)
+        - Map NL "voordeel alle aard" to category "benefit_in_kind".
+        - Examples from Belgian slips:
+          * 3090 "voordeel alle aard bedrijfswagen" → benefits item (likely credit, taxable: true)
+          * 1622/1624/1626 device/subscription VAAs → benefits items (usually small amounts)
+        - "terugbetaalde kosten forfaitair" is typically an allowance; classify as "allowance", taxable usually false unless marked otherwise.
+        - Use the printed sign on the line to set direction ("+" → credit, "−" → debit). Store absolute in "amount".
+
+        Return JSON ONLY.
