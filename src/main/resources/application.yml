@@ -1,0 +1,37 @@
+﻿spring:
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY:your-api-key-here}
+      chat:
+        options:
+          model: gpt-4o
+
+ai:
+  prompts:
+    payslip:
+      user-extraction: "Extract the payslip data from this image."
+      system-extraction: |
+        You are an expert at extracting payslip data.
+        Extract the following information from the payslip image:
+        - Employee name
+        - Employer name
+        - Pay period start date
+        - Pay period end date
+        - Payment date
+        - Currency (ISO code like USD, EUR, GBP)
+        - Gross pay amount
+        - Net pay amount
+        
+        Return the data as JSON matching this structure:
+        {
+          "employeeName": "string",
+          "employerName": "string",
+          "periodStart": "YYYY-MM-DD",
+          "periodEnd": "YYYY-MM-DD",
+          "payDate": "YYYY-MM-DD",
+          "currency": "string",
+          "gross": number,
+          "net": number
+        }
+        
+        If any field is not found, use null for that field.
