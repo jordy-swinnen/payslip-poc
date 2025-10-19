@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/payslip")
-public class PayslipController {
+public class PayslipExtractController {
 
     private final PayslipExtractionService service;
 

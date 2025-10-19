@@ -20,7 +20,7 @@ public record ExtractedPayslipDataDTO(
     public record PersonalInfo(
             String name,
             String address,
-            String nationalId,      // INSZ/NISS
+            String nationalId,
             String maritalStatus,
             Integer dependents
     ) {

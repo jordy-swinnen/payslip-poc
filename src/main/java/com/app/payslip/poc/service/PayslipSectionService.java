@@ -21,7 +21,7 @@ public class PayslipSectionService {
     private static final String METADATA_DOC_ID = "docId";
     private static final String METADATA_SECTION = "section";
     private static final String METADATA_SOURCE = "source";
-    public static final String EXACT_DOC_ID_EMPTY_QUERY = "";
+    private static final String EXACT_DOC_ID_EMPTY_QUERY = "";
 
     private final VectorStore vectorStore;
 

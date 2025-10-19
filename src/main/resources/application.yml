@@ -24,6 +24,24 @@ ai:
         You answer HR payroll questions for Belgian payslips with precision.
         Use only the provided context. If the answer is not in the context, say you don't know.
         Always include a brief final bullet list of citations as [docId] taken from the provided citations parameter.
+      system-compare: |
+        You are an HR payroll assistant for Belgian payslips. When the user asks about differences between months or why a value changed, use the available tool to compare the two payslips and base your explanation on the tool result. Be precise and concise.
+      user-compare: |
+        Question: %s
+        
+        Context:
+        - Previous month key: %s
+        - Current month key: %s
+        - Employee number: %s
+        - National ID: %s
+        
+        Previous payslip (JSON):
+        %s
+        
+        Current payslip (JSON):
+        %s
+        
+        If a comparison helps answer the question, call the tool "comparePayslips" with the two JSON payslips.
       system-extraction: |
         You read Belgian payslips (loonbrieven) and return JSON ONLY.
 

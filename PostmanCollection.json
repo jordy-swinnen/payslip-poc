@@ -158,6 +158,98 @@
       ]
     },
     {
+      "name": "Compare Payslips and Chat",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "previous",
+              "type": "file",
+              "src": [],
+              "description": "Previous payslip file (PDF or image format)"
+            },
+            {
+              "key": "current",
+              "type": "file",
+              "src": [],
+              "description": "Current payslip file (PDF or image format)"
+            },
+            {
+              "key": "question",
+              "type": "text",
+              "value": "What are the differences between these two payslips?",
+              "description": "A natural language question to ask about the comparison"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/payslip/chat",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "payslip",
+            "chat"
+          ]
+        },
+        "description": "Compare two payslips (previous and current) and ask a natural language question about their differences. Returns an AI-generated explanation based on the comparison."
+      },
+      "response": [
+        {
+          "name": "Successful Comparison",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "previous",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "current",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "question",
+                  "type": "text",
+                  "value": "What are the differences between these two payslips?"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/payslip/chat",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "payslip",
+                "chat"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"answer\": \"Comparing your previous and current payslips, your net pay increased from $4,200 to $4,500. This increase is primarily due to a $300 raise in your basic salary.\"\n}"
+        }
+      ]
+    },
+    {
       "name": "Get Payslip Section by Document ID",
       "request": {
         "method": "GET",

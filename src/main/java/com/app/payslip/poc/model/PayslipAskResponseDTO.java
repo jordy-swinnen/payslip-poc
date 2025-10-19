@@ -5,7 +5,10 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record PayslipAskResponseDTO(String answer, List<PayslipAskCitationDTO> sources) {
+public record PayslipAskResponseDTO(
+        String answer,
+        List<PayslipAskCitationDTO> sources
+) {
     @Builder
     public record PayslipAskCitationDTO(
             String docId,

@@ -44,7 +44,7 @@ public class PayslipAskService {
     private final PromptConfigProperties promptConfig;
     private final SemanticDefinitionMatcher semanticDefinitionMatcher;
 
-    public PayslipAskResponseDTO answer(MultipartFile payslipFile, String question) throws IOException {
+    public PayslipAskResponseDTO ask(MultipartFile payslipFile, String question) throws IOException {
         log.info("Processing payslip question: {}", question);
 
         ExtractedPayslipDataDTO extractedData = extractionService.scrapeAndIndexPayslip(payslipFile);
