@@ -1,0 +1,273 @@
+{
+  "info": {
+    "name": "Payslip Data Extraction API",
+    "description": "Collection for testing Payslip extraction and similarity search endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "item": [
+    {
+      "name": "Extract Payslip Data",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": [],
+              "description": "Payslip file (PDF or image format)"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/payslip/extract",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "payslip",
+            "extract"
+          ]
+        },
+        "description": "Extracts structured data from a payslip file (PDF or image). The extracted data is also indexed into the vector store for similarity search."
+      },
+      "response": [
+        {
+          "name": "Successful Extraction",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/payslip/extract",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "payslip",
+                "extract"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"personal\": {\n    \"name\": \"John Doe\",\n    \"nationalId\": \"123456789\"\n  },\n  \"period\": {\n    \"monthKey\": \"2024-01\",\n    \"payDate\": \"2024-01-31\"\n  },\n  \"earnings\": [\n    {\n      \"description\": \"Basic Salary\",\n      \"amount\": 5000.00\n    }\n  ],\n  \"deductions\": [\n    {\n      \"description\": \"Tax\",\n      \"amount\": 500.00\n    }\n  ],\n  \"totals\": {\n    \"grossPay\": 5000.00,\n    \"totalDeductions\": 500.00,\n    \"netPay\": 4500.00\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Find Similar Payslips by National ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/payslip/similar?nationalId=123456789&limit=3",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "payslip",
+            "similar"
+          ],
+          "query": [
+            {
+              "key": "nationalId",
+              "value": "123456789",
+              "description": "National ID of the employee (optional)"
+            },
+            {
+              "key": "employeeName",
+              "value": "",
+              "description": "Employee name (optional)",
+              "disabled": true
+            },
+            {
+              "key": "limit",
+              "value": "3",
+              "description": "Maximum number of similar payslips to return (optional, default: 3)"
+            }
+          ]
+        },
+        "description": "Searches the vector store for similar payslips by national ID. You can provide either nationalId or employeeName (or both). Returns up to N most similar payslips ordered by relevance."
+      },
+      "response": [
+        {
+          "name": "Successful Search",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/payslip/similar?nationalId=123456789&limit=3",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "payslip",
+                "similar"
+              ],
+              "query": [
+                {
+                  "key": "nationalId",
+                  "value": "123456789"
+                },
+                {
+                  "key": "limit",
+                  "value": "3"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "[\n  {\n    \"payslipId\": \"payslip:123456789:2024:01\",\n    \"nationalId\": \"123456789\",\n    \"name\": \"John Doe\",\n    \"monthKey\": \"2024-01\",\n    \"payDate\": \"2024-01-31\",\n    \"source\": \"payslip_january.pdf\",\n    \"documentIds\": [\n      \"payslip:123456789:2024:01:personal\",\n      \"payslip:123456789:2024:01:period\",\n      \"payslip:123456789:2024:01:earnings\",\n      \"payslip:123456789:2024:01:deductions\"\n    ]\n  },\n  {\n    \"payslipId\": \"payslip:123456789:2023:12\",\n    \"nationalId\": \"123456789\",\n    \"name\": \"John Doe\",\n    \"monthKey\": \"2023-12\",\n    \"payDate\": \"2023-12-31\",\n    \"source\": \"payslip_december.pdf\",\n    \"documentIds\": [\n      \"payslip:123456789:2023:12:personal\",\n      \"payslip:123456789:2023:12:period\",\n      \"payslip:123456789:2023:12:earnings\",\n      \"payslip:123456789:2023:12:deductions\"\n    ]\n  }\n]"
+        },
+        {
+          "name": "Empty Results",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/payslip/similar?nationalId=999999999&limit=3",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "payslip",
+                "similar"
+              ],
+              "query": [
+                {
+                  "key": "nationalId",
+                  "value": "999999999"
+                },
+                {
+                  "key": "limit",
+                  "value": "3"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "[]"
+        }
+      ]
+    },
+    {
+      "name": "Find Similar Payslips by Employee Name",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/payslip/similar?employeeName=John Doe&limit=3",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "payslip",
+            "similar"
+          ],
+          "query": [
+            {
+              "key": "nationalId",
+              "value": "",
+              "description": "National ID of the employee (optional)",
+              "disabled": true
+            },
+            {
+              "key": "employeeName",
+              "value": "John Doe",
+              "description": "Employee name (optional)"
+            },
+            {
+              "key": "limit",
+              "value": "3",
+              "description": "Maximum number of similar payslips to return (optional, default: 3)"
+            }
+          ]
+        },
+        "description": "Searches the vector store for similar payslips by employee name. You can provide either nationalId or employeeName (or both). Returns up to N most similar payslips ordered by relevance."
+      },
+      "response": []
+    },
+    {
+      "name": "Find Similar Payslips (Default Limit)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/payslip/similar?nationalId=123456789",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "payslip",
+            "similar"
+          ],
+          "query": [
+            {
+              "key": "nationalId",
+              "value": "123456789",
+              "description": "National ID of the employee (optional)"
+            },
+            {
+              "key": "employeeName",
+              "value": "",
+              "description": "Employee name (optional)",
+              "disabled": true
+            }
+          ]
+        },
+        "description": "Searches for similar payslips with default limit of 3 results. You can search by nationalId, employeeName, or both."
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ]
+}

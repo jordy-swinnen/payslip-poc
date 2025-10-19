@@ -1,10 +1,20 @@
 ﻿spring:
+  application:
+    name: payslip-poc
+  elasticsearch:
+    uris: http://localhost:9200
   ai:
     openai:
       api-key: ${OPENAI_API_KEY:your-api-key-here}
       chat:
         options:
           model: gpt-4o
+    vectorstore:
+      elasticsearch:
+        initialize-schema: true
+        index-name: payslip-index
+        dimensions: 1536
+        similarity: cosine
 
 ai:
   prompts:
