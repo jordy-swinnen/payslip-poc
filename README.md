@@ -18,8 +18,9 @@ similarity-based retrieval.
 - **Vector Store Integration**: Automatically indexes extracted payslip data into Elasticsearch
 - **Similarity Search**: Find similar payslips by employee name or national ID using vector embeddings
 - **Question Answering**: Ask natural language questions about uploaded payslips
+- **Payslip Comparison**: Compare two payslips and get AI-powered explanations of differences
 - **Document Section Retrieval**: Retrieve specific payslip sections by document ID
-- **RESTful API**: Simple HTTP endpoints for file upload, data extraction, Q&A, and similarity search
+- **RESTful API**: Simple HTTP endpoints for file upload, data extraction, Q&A, comparison, and similarity search
 - **Docker Compose Support**: Easy setup with containerized Elasticsearch
 
 ## API Endpoints
@@ -43,14 +44,23 @@ A ready-to-use Postman collection is available in the root of the project: `Post
 - **Request**: Upload a payslip file and provide a question
 - **Response**: AI-generated answer based on the payslip content
 
-### 3. Get Payslip Section
+### 3. Compare Payslips and Chat
+
+**POST** `/api/payslip/chat`
+
+- **Content-Type**: `multipart/form-data`
+- **Request**: Upload two payslip files (previous and current) and provide a question
+- **Response**: AI-generated comparison and explanation based on both payslips
+- Use this endpoint to understand differences between payslip periods
+
+### 4. Get Payslip Section
 
 **GET** `/api/payslip/section/{docId}`
 
 - **Path Parameter**: `docId` - Document identifier
 - **Response**: Specific payslip section data (200) or 404 if not found
 
-### 4. Find Similar Payslips
+### 5. Find Similar Payslips
 
 **GET** `/api/payslip/similar`
 
