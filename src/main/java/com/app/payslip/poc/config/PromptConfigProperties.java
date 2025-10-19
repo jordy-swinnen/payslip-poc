@@ -14,7 +14,7 @@ public class PromptConfigProperties {
     @Data
     public static class PayslipPrompts {
         private String systemExtraction;
-        private String systemValidation;
+        private String systemAsk;
         private String userExtraction;
     }
 }

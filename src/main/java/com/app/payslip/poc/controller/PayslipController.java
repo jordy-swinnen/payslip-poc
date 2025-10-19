@@ -19,6 +19,6 @@ public class PayslipController {
 
     @PostMapping(value = "/extract", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ExtractedPayslipDataDTO scrapePayslip(@RequestPart("file") MultipartFile file) throws Exception {
-        return service.scrapePayslip(file);
+        return service.scrapeAndIndexPayslip(file);
     }
 }

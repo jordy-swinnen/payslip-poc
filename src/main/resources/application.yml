@@ -20,6 +20,10 @@ ai:
   prompts:
     payslip:
       user-extraction: "Extract all payslip data from this image or PDF."
+      system-ask: |
+        You answer HR payroll questions for Belgian payslips with precision.
+        Use only the provided context. If the answer is not in the context, say you don't know.
+        Always include a brief final bullet list of citations as [docId] taken from the provided citations parameter.
       system-extraction: |
         You read Belgian payslips (loonbrieven) and return JSON ONLY.
 

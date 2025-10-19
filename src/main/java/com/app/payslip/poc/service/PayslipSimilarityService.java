@@ -1,6 +1,6 @@
 package com.app.payslip.poc.service;
 
-import lombok.Builder;
+import com.app.payslip.poc.model.SimilarPayslipDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.document.Document;
@@ -30,7 +30,7 @@ public class PayslipSimilarityService {
 
     private final VectorStore vectorStore;
 
-    public List<SimilarPayslip> findSimilarPayslips(String nationalId, String employeeName, int limit) {
+    public List<SimilarPayslipDTO> payslipSimilaritySearch(String nationalId, String employeeName, int limit) {
         validateSearchParameters(nationalId, employeeName);
 
         log.info("Searching payslips: nationalId='{}', employeeName='{}', limit={}",
@@ -42,10 +42,6 @@ public class PayslipSimilarityService {
         log.info("Found {} documents", documents.size());
 
         return groupDocumentsByPayslip(documents, limit);
-    }
-
-    public List<SimilarPayslip> findSimilarPayslips(String nationalId, int limit) {
-        return findSimilarPayslips(nationalId, null, limit);
     }
 
     private void validateSearchParameters(String nationalId, String employeeName) {
@@ -87,14 +83,14 @@ public class PayslipSimilarityService {
         return vectorStore.similaritySearch(searchRequest);
     }
 
-    private List<SimilarPayslip> groupDocumentsByPayslip(List<Document> documents, int limit) {
-        Map<String, SimilarPayslip> payslipMap = new LinkedHashMap<>();
+    private List<SimilarPayslipDTO> groupDocumentsByPayslip(List<Document> documents, int limit) {
+        Map<String, SimilarPayslipDTO> payslipMap = new LinkedHashMap<>();
 
         for (Document doc : documents) {
             String payslipId = extractPayslipId(doc.getId());
 
             if (!payslipMap.containsKey(payslipId)) {
-                payslipMap.put(payslipId, createSimilarPayslip(doc, payslipId));
+                payslipMap.put(payslipId, createSimilarPayslipDTO(doc, payslipId));
             }
 
             payslipMap.get(payslipId).documentIds().add(doc.getId());
@@ -103,10 +99,10 @@ public class PayslipSimilarityService {
         return limitResults(new ArrayList<>(payslipMap.values()), limit);
     }
 
-    private SimilarPayslip createSimilarPayslip(Document doc, String payslipId) {
+    private SimilarPayslipDTO createSimilarPayslipDTO(Document doc, String payslipId) {
         Map<String, Object> metadata = doc.getMetadata();
 
-        return SimilarPayslip.builder()
+        return SimilarPayslipDTO.builder()
                 .payslipId(payslipId)
                 .nationalId(getMetadataString(metadata, METADATA_NATIONAL_ID))
                 .name(getMetadataString(metadata, METADATA_NAME))
@@ -135,22 +131,10 @@ public class PayslipSimilarityService {
         return value != null ? value.toString() : "";
     }
 
-    private List<SimilarPayslip> limitResults(List<SimilarPayslip> payslips, int limit) {
+    private List<SimilarPayslipDTO> limitResults(List<SimilarPayslipDTO> payslips, int limit) {
         if (payslips.size() > limit) {
             return payslips.subList(0, limit);
         }
         return payslips;
-    }
-
-    @Builder
-    public record SimilarPayslip(
-            String payslipId,
-            String nationalId,
-            String name,
-            String monthKey,
-            String payDate,
-            String source,
-            List<String> documentIds
-    ) {
     }
 }

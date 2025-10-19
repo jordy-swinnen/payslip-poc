@@ -24,7 +24,7 @@ public class PayslipExtractionService {
     private final PromptConfigProperties promptConfig;
     private final PayslipIndexService payslipIndexService;
 
-    public ExtractedPayslipDataDTO scrapePayslip(MultipartFile file) throws IOException {
+    public ExtractedPayslipDataDTO scrapeAndIndexPayslip(MultipartFile file) throws IOException {
         byte[] imageBytes = convertFileToImageBytes(file);
 
         ExtractedPayslipDataDTO extractedPayslipData = executePrompt(imageBytes);

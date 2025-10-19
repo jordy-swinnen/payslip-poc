@@ -77,6 +77,174 @@
       ]
     },
     {
+      "name": "Ask Question About Payslip",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": [],
+              "description": "Payslip file (PDF or image format)"
+            },
+            {
+              "key": "question",
+              "type": "text",
+              "value": "What is my net pay?",
+              "description": "A natural language question to ask about the payslip"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/payslip/ask",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "payslip",
+            "ask"
+          ]
+        },
+        "description": "Ask a natural language question about the uploaded payslip document. Returns an answer based on extracted payslip data."
+      },
+      "response": [
+        {
+          "name": "Successful Response",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "question",
+                  "type": "text",
+                  "value": "What is my net pay?"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/payslip/ask",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "payslip",
+                "ask"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"answer\": \"Your net pay for January is 4,500 USD.\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Get Payslip Section by Document ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/payslip/section/:docId",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "payslip",
+            "section",
+            ":docId"
+          ],
+          "variable": [
+            {
+              "key": "docId",
+              "value": "payslip:123456789:2024:01:personal",
+              "description": "Document ID of the payslip section"
+            }
+          ]
+        },
+        "description": "Retrieves a specific payslip section by its document ID. Returns the section data if found, or 404 if not found."
+      },
+      "response": [
+        {
+          "name": "Successful Response",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/payslip/section/payslip:123456789:2024:01:personal",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "payslip",
+                "section",
+                "payslip:123456789:2024:01:personal"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"docId\": \"payslip:123456789:2024:01:personal\",\n  \"section\": \"personal\",\n  \"content\": \"Employee: John Doe, National ID: 123456789\"\n}"
+        },
+        {
+          "name": "Not Found",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/payslip/section/invalid-doc-id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "payslip",
+                "section",
+                "invalid-doc-id"
+              ]
+            }
+          },
+          "status": "Not Found",
+          "code": 404,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": ""
+        }
+      ]
+    },
+    {
       "name": "Find Similar Payslips by National ID",
       "request": {
         "method": "GET",

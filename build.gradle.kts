@@ -28,14 +28,20 @@ extra["springAiVersion"] = "1.0.3"
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
+
 	implementation("org.springframework.ai:spring-ai-starter-model-openai")
     implementation("org.springframework.ai:spring-ai-starter-vector-store-elasticsearch")
+    implementation("org.springframework.ai:spring-ai-advisors-vector-store")
+    implementation("org.springframework.ai:spring-ai-rag")
+
     implementation("org.apache.pdfbox:pdfbox:3.0.5")
-    compileOnly("org.projectlombok:lombok")
+
     annotationProcessor("org.projectlombok:lombok")
+    compileOnly("org.projectlombok:lombok")
     runtimeOnly("org.springframework.boot:spring-boot-docker-compose")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
